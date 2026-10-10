@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# PageWise Desktop App Launcher
+set -e
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+STANDALONE_BIN="$DIR/dist-desktop/pagewise-linux-x64/pagewise"
+
+if [ -x "$STANDALONE_BIN" ]; then
+  exec "$STANDALONE_BIN" "$@"
+elif [ -x "$DIR/node_modules/.bin/electron" ]; then
+  exec "$DIR/node_modules/.bin/electron" "$DIR" "$@"
+elif command -v electron >/dev/null 2>&1; then
+  exec electron "$DIR" "$@"
+else
+  echo "Error: Neither standalone bundle nor electron runtime was found." >&2
+  exit 1
+fi
